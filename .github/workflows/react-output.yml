@@ -1,0 +1,10 @@
+name: Output Information
+on: [workflow_dispatch]
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      # context data about trigger/runner
+      # https://docs.github.com/en/actions/learn-github-actions/contexts
+      - name: Output Github Context
+        run: echo "${{ toJSON(github) }}"
