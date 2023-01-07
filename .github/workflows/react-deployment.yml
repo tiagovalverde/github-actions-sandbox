@@ -19,6 +19,7 @@ jobs:
           cd react 
           npm test
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Get code from repo
