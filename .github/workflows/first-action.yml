@@ -1,0 +1,25 @@
+# workflow name seen on actions tab
+name: First Workflow
+
+# when workflow is executed
+on:
+  # list of events that should trigger workflow to run
+  
+  # can manuall trigger workflow
+  workflow_dispatch:
+
+# work that should be done
+jobs:
+  first-job:
+    # define environment to use on this job
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: ubuntu-latest
+    steps:
+      # step definitions
+      - name: Print Greeting
+        # can be either bash or action
+        run: echo "Hello World"
+      - name: Print Goodbye
+        run: echo "See you later!"
+    
+  
