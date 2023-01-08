@@ -42,8 +42,8 @@ jobs:
         with:
           name: dist-files # artifact identifier
           path: |
-            dist
-            package.json
+            react/dist
+            react/package.json
   deploy:
     needs: build
     runs-on: ubuntu-latest
