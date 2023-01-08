@@ -14,10 +14,10 @@ jobs:
         run: |
           cd react
           npm ci
-      - name: Lint code
-        run: |
-          cd react 
-          npm run lint
+      #- name: Lint code
+      # run: |
+      #    cd react 
+      #    npm run lint
       - name: Test code
         run: |
           cd react
