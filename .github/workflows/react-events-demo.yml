@@ -25,4 +25,4 @@ jobs:
           cd react
           npm run build
       - name: Deploy project
-        run: echo "Deployinh ..."
+        run: echo "Deploying ..."
