@@ -1,0 +1,51 @@
+name: Deployment Node
+on:
+  workflow_dispatch:
+  #push:
+  #  branches:
+  #    - main
+  #    - dev
+# global variable
+env:
+  MONGO_DB_NAME: gha-demo
+jobs:
+  test:
+    # job env only
+    env:
+      MONGO_CLUSTER_ADDRESS: replace_me
+      MONGO_USERNAME: replace_me
+      MONGO_PASSWORD: replace_me
+      PORT: 8080
+    environment: testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-deps-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: |
+          cd node-express
+          npm ci
+      - name: Run server
+        run: |
+          cd node-express
+          npm start & npx wait-on http://127.0.0.1:$PORT
+      - name: Run tests
+        run: |
+          cd node-express
+          npm test
+      - name: Output information
+        run: |
+          echo "MONGO_USERNAME: ${{ env.MONGO_USERNAME }}"
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output information
+        run: |        
+          echo "MONGO_USERNAME: ${{ env.MONGO_USERNAME }}"
+          echo "MONGO_DB_NAME: ${{ env.MONGO_DB_NAME }}"
