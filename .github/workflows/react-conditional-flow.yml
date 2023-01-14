@@ -1,0 +1,98 @@
+name: React Deploy (Conditional Flow)
+on:
+  push:
+    branches:
+      - main
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: |
+          cd react 
+          npm ci
+      - name: Lint code
+        run: |
+          cd react
+          npm run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: |
+          cd react 
+          npm ci
+      - name: Test code
+        id: test-code-step
+        run: |
+          cd react
+          npm run test
+      - name: Upload test report
+        # conditional step
+        # https://docs.github.com/en/actions/learn-github-actions/contexts
+        # https://docs.github.com/en/actions/learn-github-actions/expressions
+        # if: ${{  }}
+        # outcome: [success, failure, cancelled, skipped]
+        # failure()   returns true when any previous step/job failed
+        # always()    returns true when non of steps failed
+        # success()   causes step to alwaus execute
+        # cancelled() true if wkf has been cancelled
+        if: failure() &&steps.test-code-step.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: react/test.json
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: |
+          cd react 
+          npm ci
+      - name: Build website
+        id: build-website
+        run: |
+          cd react
+          npm run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: react/dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-files
+      - name: Output contents
+        run: ls
+      - name: Deploy
+        run: echo "Deploying..."
