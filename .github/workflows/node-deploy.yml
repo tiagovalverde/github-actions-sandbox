@@ -10,13 +10,14 @@ env:
   MONGO_DB_NAME: gha-demo
 jobs:
   test:
+    # uses secrets added in settings > environments testing
+    environment: testing
     # job env only
     env:
       MONGO_CLUSTER_ADDRESS: ${{ secrets.MONGO_CLUSTER_ADDRESS }}
       MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
       MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
       PORT: 8080
-    environment: testing
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
