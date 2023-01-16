@@ -8,9 +8,12 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
       - name: Load & Cache Dependencies
+        id: cache-deps-step
         uses: ./.github/actions/cached-deps
         with:
           caching: 'false'
+      - name: Output Information
+        run: echo "Cache Used? ${{ steps.cache-deps-step.outputs.used-cache }}"
       - name: Test code
         id: run-tests
         run: |
