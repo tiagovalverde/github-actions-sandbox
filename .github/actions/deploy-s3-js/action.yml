@@ -1,6 +1,25 @@
+# AWS
+# - create S3 bucket
+# - allow public access
+# - enable statis website hosting
+# - update permission > policites
+
 name: 'Deploy to AWS S3'
 description: 'Deploy static site via AWS S3'
-runs: 
+inputs: 
+  bucket:
+    description: 'S3 Bucket name'
+    required: true
+  region: 
+    description: 'S3 Bucket region'
+    required: false
+    default: 'us-east-1'
+  dist-folder:
+    description: 'Folder containing website compiled files'
+outputs:
+  website-url:
+    description: 'URL of deployed website'
+runs:
   using: 'node16'
   main: 'main.js'
   # pre: setup.js

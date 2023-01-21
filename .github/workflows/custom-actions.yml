@@ -7,6 +7,7 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      # Custom Actions - Composite Action
       - name: Load & Cache Dependencies
         id: cache-deps-step
         uses: ./.github/actions/cached-deps
@@ -31,6 +32,7 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      # Custom Actions - Composite Action
       - name: Load & Cache Dependencies
         uses: ./.github/actions/cached-deps
       - name: Build website
@@ -55,12 +57,24 @@ jobs:
           path: ./react/dist
       - name: Output contents
         run: ls
+        # Custom Actions - Javascript Action
       - name: Deploy site
-        run: echo "Deploying..."
-  information:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get code
-        uses: actions/checkout@v3
-      - name: Run Custom JS Actions
+        id: deploy-step
         uses: ./.github/actions/deploy-s3-js
+        # By addding repo secrets vatiables
+        env:
+          AWS_ACCESS_KEY_ID: <aws-id>
+          AWS_SECRET_ACCESS_KEY: <aws-secret>
+        with:
+          bucket: <s3-bucket-name>
+          dist-folder: ./react/dist
+      - name: Output deployed website url
+        run: |
+          echo 'LIVE URL: ${{ steps.deploy-step.outputs.website-url }}'
+  #information:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Get code
+  #      uses: actions/checkout@v3
+  #    - name: Run Custom JS Actions
+  #      uses: ./.github/actions/deploy-s3-js
