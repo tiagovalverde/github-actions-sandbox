@@ -57,9 +57,10 @@ jobs:
           path: ./react/dist
       - name: Output contents
         run: ls
-        # Custom Actions - Javascript Action
+        # Custom Actions - Javascript Action OR Docker Action
       - name: Deploy site
         id: deploy-step
+        # uses: ./.github/actions/deploy-s3-docker
         uses: ./.github/actions/deploy-s3-js
         # By addding repo secrets vatiables
         env:
